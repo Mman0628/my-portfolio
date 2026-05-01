@@ -17,8 +17,9 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 RUN npm ci && npm run build
 
-RUN php artisan optimize || true
-
 EXPOSE 8080
 
-CMD php -S 0.0.0.0:$PORT -t public
+CMD cp .env.example .env && \
+    php artisan key:generate && \
+    php artisan optimize || true && \
+    php -S 0.0.0.0:$PORT -t public
