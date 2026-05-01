@@ -17,8 +17,9 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 RUN npm ci && npm run build
 
-RUN chmod +x start.sh
+RUN cp .env.example .env
 
 EXPOSE 8080
 
-CMD ["/bin/bash", "/app/start.sh"]
+ENTRYPOINT ["/bin/bash", "-c"]
+CMD ["touch /tmp/database.sqlite && php artisan key:generate && php artisan migrate --force || true && exec php -S 0.0.0.0:${PORT:-8080} -t public"]
